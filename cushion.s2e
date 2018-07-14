@@ -387,6 +387,20 @@
 				"work":"numSecArr_{0}[{1}][{2}]",
 				"loop":""
 			}
+		],
+		["-"],
+		[
+			"w",
+			"디버그용 시리얼 %s",
+			"debugSerial",
+			" ",
+			{
+				"setup": "Serial.begin(57600);\n",
+				"inc":"",
+				"def":"",
+				"work":"Serial.print({0});\n",
+				"loop":""
+			}
 		]
 	],
 	"menus": {
