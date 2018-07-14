@@ -1,0 +1,448 @@
+{	
+	"extensionName": "cushion Extension",
+	"description": "cushion Extension for 2018 KCTF",
+	"version": "1.0",
+	"author": "BetaMan-KangMinsoo(skymin0417@gmail.com)",
+	"homepage": "github.com/skymins04",
+	"sort":0,
+	"javascriptURL":"js/cushion.js",
+  	"firmware":"1.0",
+  	"extensionPort":0,
+	"blockSpecs": [
+		["h","Arduino Program","runArduino"],
+		["B", "read digital pin %n","getDigital","9",
+		{"encode":"{d0}","setup":"pinMode({0},INPUT);\n","inc":"","def":"","work":"digitalRead({0})","loop":""}],
+		["R", "read analog pin (A)%n","getAnalog","0",
+		{"encode":"{d0}","setup":"pinMode(A0+{0},INPUT);\n","inc":"","def":"","work":"analogRead(A0+{0})","loop":""}],
+		["R", "read pulse pin %n timeout %n","getPulse","13",20000,
+		{"encode":"{d0}","setup":"pinMode({0},INPUT);\n","inc":"","def":"","work":"pulseIn({0},HIGH,{1})","loop":""}],
+		["R", "read ultrasonic sensor trig pin %n echo pin %n","getUltrasonicArduino",13,12,
+		{"encode":"{d0}","setup":"","inc":"","def":"--separator--float getDistance(int trig,int echo){\npinMode(trig,OUTPUT);\ndigitalWrite(trig,LOW);\ndelayMicroseconds(2);\ndigitalWrite(trig,HIGH);\ndelayMicroseconds(10);\ndigitalWrite(trig,LOW);\npinMode(echo, INPUT);\nreturn pulseIn(echo,HIGH,30000)/58.0;\n}\n","work":"getDistance({0},{1})","loop":""}],
+		["-"],
+		["w", "set digital pin %n output as %d.digital","runDigital", "9", "HIGH",
+		{"encode":"{d0}{d1}","setup":"pinMode({0},OUTPUT);\n","inc":"","def":"","work":"digitalWrite({0},{1});\n","loop":""}],
+		["w", "set pwm pin %n output as %d.pwmvalue","runPwm", "5", 0,
+		{"encode":"{d0}{d1}","setup":"pinMode({0},OUTPUT);\n","inc":"","def":"","work":"analogWrite({0},{1});\n","loop":""}],
+		["w", "play tone pin %n on note %d.notes beat %d.beats","runTone", "9", "C4","Half",
+		{"encode":"{d0}{s1}{s2}","setup":"pinMode({0},OUTPUT);\n","inc":"","def":"","work":"tone({0},{1},{2}); // write to buzzer\ndelay({2});\n","loop":""}],
+		["w", "set servo pin %n angle as %d.servovalue","runServoArduino", "9", 90,
+		{"encode":"{d0}{d1}","setup":"servo_{0}.attach({0}); // init pin\n","inc":"#include <Servo.h>\n","def":"Servo servo_{0};\n","work":"servo_{0}.write({1}); // write to servo\n","loop":""}],
+		["-"],
+		["w", "serial write text %s", "serialWrite", "hello",
+		{"setup":"Serial.begin(115200);\n","inc":"","def":"","work":"Serial.println({0});\n","loop":""}],
+		["R", "serial available bytes", "serialAvailable",
+		{"setup":"Serial.begin(115200);\n","inc":"","def":"","work":"Serial.available()","loop":""}],
+		["R", "serial read byte", "serialRead",
+		{"setup":"Serial.begin(115200);\n","inc":"","def":"","work":"Serial.read()","loop":""}],
+		["-"],
+		["R", "timer","getTimer", "0",
+		{"encode":"{n0}","setup":"","inc":"","def":"double currentTime = 0;\ndouble lastTime = 0;\n--separator--double getLastTime(){\n\treturn currentTime = millis()/1000.0 - lastTime;\n}\n","work":"getLastTime()","loop":""}],
+		["w", "reset timer","resetTimer", "0",
+		{"encode":"{n0}","setup":"","inc":"","def":"double currentTime = 0;\ndouble lastTime = 0;\n","work":"lastTime = millis()/1000.0;\n","loop":""}],
+		["---"],
+		[
+			"h",
+			"RTC 모듈 블럭들",
+			"RTCHead",
+			{
+				"setup":"",
+				"inc":"",
+				"work":"",
+				"def":"",
+				"loop":""
+			}
+		],
+		[
+			"w",
+			"RTC: 현재 시간과 날짜로 초기화하기",
+			"setRTC",
+			{
+				"setup":"",
+				"inc":"#include \"dmonkeyRTC.h\"\n",
+				"def":"dmonkeyRTC rtc;",
+				"work":"rtc.setRTC();",
+				"loop":""
+			}
+		],
+		["-"],
+		[
+			"r",
+			"RTC: 시간",
+			"RTCreadTime",
+			{
+				"setup":"",
+				"inc":"#include \"dmonkeyRTC.h\"\n",
+				"def":"dmonkeyRTC rtc;",
+				"work":"rtc.readTime()",
+				"loop":""
+			}
+		],
+		[
+			"r",
+			"RTC: 시간중 %d.TimeField 만 읽기",
+			"RTCreadTimeField",
+			"시",
+			{
+				"setup":"",
+				"inc":"#include \"dmonkeyRTC.h\"\n",
+				"def":"dmonkeyRTC rtc;",
+				"work":"rtc.readTimeField({0})",
+				"loop":""
+			}
+		],
+		[
+			"r",
+			"RTC: 날짜",
+			"RTCreadDate",
+			{
+				"setup":"",
+				"inc":"#include \"dmonkeyRTC.h\"\n",
+				"def":"dmonkeyRTC rtc;",
+				"work":"rtc.readDate()",
+				"loop":""
+			}
+		],
+		[
+			"r",
+			"RTC: 날짜중 %d.DateField 만 읽기",
+			"RTCreadDateField",
+			"년",
+			{
+				"setup":"",
+				"inc":"#include \"dmonkeyRTC.h\"\n",
+				"def":"dmonkeyRTC rtc;",
+				"work":"rtc.readDateField({0})",
+				"loop":""
+			}
+		],
+		["--"],
+		[
+			"h",
+			"LCD 모듈 블럭들",
+			"LCDHead",
+			{
+				"setup":"",
+				"inc":"",
+				"def":"",
+				"work":"",
+				"loop":""
+			}
+		],
+		[
+			"w",
+			"LCD: %n 번을 주소 %d.addr 로 정하기",
+			"LCDBegin",
+			"1",
+			"0x27",
+			{
+				"setup":"lcd_{0}.begin();\nlcd_{0}.backlight();\n",
+				"inc":"#include \"LiquidCrystal_I2C.h\"\n",
+				"def":"LiquidCrystal_I2C lcd_{0}({1},16,2);\n",
+				"work":"",
+				"loop":""
+			}
+		],
+		[
+			"w",
+			"LCD: %n 번의 %d.line 번째 줄, %d.col 번째 칸에 %s 출력하기",
+			"LCDPrint",
+			"1",
+			"1",
+			"1",
+			"Hello World!",
+			{
+				"setup":"",
+				"inc":"",
+				"def":"",
+				"work":"lcd_{0}.setCursor({2}-1,{1}-1);\nlcd_{0}.print({3});\n",
+				"loop":""
+			}
+		],
+		[
+			"w",
+			"LCD: %n 번 지우기",
+			"LCDClear",
+			"1",
+			{
+				"setup":"",
+				"inc":"",
+				"def":"",
+				"work":"lcd_{0}.clear();\n",
+				"loop":""
+			}
+		],
+		["--"],
+		[
+			"h",
+			"로터리엔코더 블럭들",
+			"EncoderHead",
+			{
+				"setup":"",
+				"inc":"",
+				"def":"",
+				"work":"",
+				"loop":""
+			}
+		],
+		[
+			"w",
+			"로터리 엔코더: 로터리 엔코더 %n 번 생성, 디지털 DT %d.digitalPin CLK %d.digitalPin",
+			"EncoderBegin",
+			"1",
+			"2",
+			"3",
+			{
+				"setup": "",
+				"inc": "#include \"Encoder.h\"\n",
+				"def": "Encoder enc_{0}({2},{1});\n",
+				"work": "",
+				"loop": ""
+			}
+		],
+		[
+			"r",
+			"로터리 엔코더: 로터리 엔코더 %n 번 읽기",
+			"EncoderRead",
+			"1",
+			{
+				"setup": "",
+				"inc": "",
+				"def": "",
+				"work": "enc_{0}.read()",
+				"loop": ""
+			}
+		],
+		["--"],
+		[
+			"h",
+			"기타 유용한 블럭들",
+			"EtcHead",
+			{
+				"setup":"",
+				"inc":"",
+				"def":"",
+				"work":"",
+				"loop":""
+			}
+		],
+		[
+			"r",
+			"맵핑: 맵핑할 값 %n , 맵핑할 값의 범위 %n ~ %n , 결과값의 범위 %n ~ %n",
+			"mapping",
+			" ",
+			"0",
+			"1023",
+			"0",
+			"180",
+			{
+				"setup":"",
+				"inc":"",
+				"def":"",
+				"work":"map({0},{1},{2},{3},{4})",
+				"loop":""
+			}
+		],
+		["-"],
+		[
+			"w",
+			"문자열 변수 %n 번에 %s 저장",
+			"SaveStr",
+			" ",
+			" ",
+			{
+				"setup":"",
+				"inc":"",
+				"def":"String strVar_{0};\n",
+				"work":"strVar_{0} = String({1});\n",
+				"loop":""
+			}
+		],
+		[
+			"r",
+			"문자열 변수 %n 번",
+			"LoadStr",
+			" ",
+			{
+				"setup":"",
+				"inc":"",
+				"def":"",
+				"work":"strVar_{0}",
+				"loop":""
+			}
+		],
+		[
+			"r",
+			"문자열 %s (을)를 %s (을)를 기준으로 자르고 그것의 %n 번째 가져오기",
+			"SplitStr",
+			" ",
+			",",
+			"1",
+			{
+				"setup":"",
+				"inc":"",
+				"def":"#include \"Strings.h\"\n",
+				"work":"strSplit({0},{1},{2})",
+				"loop":""
+			}
+		],
+		[
+			"r",
+			"문자열 %s (을)를 숫자로 변환",
+			"convertStrToFloat",
+			" ",
+			{
+				"setup":"",
+				"inc":"",
+				"def":"#include \"Strings.h\"\n",
+				"work":"StrToFloat({0})",
+				"loop":""
+			}
+		],
+		["-"],
+		[
+			"w",
+			"숫자 1차 배열 %n 번을 인덱스 X %n 으로 생성",
+			"beginPriArr",
+			"1",
+			" ",
+			{
+				"setup":"",
+				"inc":"",
+				"def":"int numPriArr_{0}[{1}] = {0,};\n",
+				"work":"",
+				"loop":""
+			}
+		],
+		[
+			"w",
+			"숫자 1차 배열 %n 번의 인덱스 X %n 값을 %n 으로 정하기",
+			"setPriArr",
+			"1",
+			" ",
+			" ",
+			{
+				"setup":"",
+				"inc":"",
+				"def":"",
+				"work":"numPriArr_{0}[{1}] = {2};\n",
+				"loop":""
+			}
+		],
+		[
+			"r",
+			"숫자 1차 배열 %n 번의 인덱스 X %n 값",
+			"loadPriArr",
+			"1",
+			" ",
+			{
+				"setup":"",
+				"inc":"",
+				"def":"",
+				"work":"numPriArr_{0}[{1}]",
+				"loop":""
+			}
+		],
+		[
+			"w",
+			"숫자 2차 배열 %n 번을 인덱스 X %n , Y %n 으로 생성",
+			"beginSecArr",
+			"1",
+			" ",
+			" ",
+			{
+				"setup":"",
+				"inc":"",
+				"def":"int numSecArr_{0}[{1}][{2}] = {0,};\n",
+				"work":"",
+				"loop":""
+			}
+		],
+		[
+			"w",
+			"숫자 2차 배열 %n 번의 인덱스 X %n , Y %n 값을 %n 으로 정하기",
+			"setSecArr",
+			"1",
+			" ",
+			" ",
+			" ",
+			{
+				"setup":"",
+				"inc":"",
+				"def":"",
+				"work":"numSecArr_{0}[{1}][{2}] = {3};\n",
+				"loop":""
+			}
+		],
+		[
+			"r",
+			"숫자 2차 배열 %n 번의 인덱스 X %n , Y %n 값",
+			"loadSecArr",
+			"1",
+			" ",
+			" ",
+			{
+				"setup":"",
+				"inc":"",
+				"def":"",
+				"work":"numSecArr_{0}[{1}][{2}]",
+				"loop":""
+			}
+		]
+	],
+	"menus": {
+		"addr":["0x20","0x27","0x3f"],
+		"line":[1,2],
+		"col":[1,2,4,6,7,8,9,10,11,12,13,14,15,16],
+		"digitalPin":[0,1,2,3,4,5,6,7,8,9,10,11,12,13],
+		"analog":[0,1,2,3,4,5,6,7],
+		"TimeField":["시","분","초"],
+		"DateField":["년","월","일"],
+		"power":["끄기","켜기"],
+		"beats":[500,250,125,1000,2000,0],
+		"servovalue":[0,45,90,135,180],
+		"pwmvalue":[0,50,100,150,255],
+		"digital":["HIGH","LOW"],
+		"notes":["C2","D2","E2","F2","G2","A2","B2","C3","D3","E3","F3","G3","A3","B3","C4","D4","E4","F4","G4","A4","B4","C5","D5","E5","F5","G5","A5","B5","C6","D6","E6","F6","G6","A6","B6","C7","D7","E7","F7","G7","A7","B7","C8","D8"],
+		"beats":["Half","Quarter","Eighth","Whole","Double","Zero"]
+	},
+	"values":{
+		"0x20": 0x20,
+		"0x27": 0x27,
+		"0x3f": 0x3f,
+		"시": 0,
+		"분": 1,
+		"초": 2,
+		"년": 0,
+		"월": 1,
+		"일": 2,
+		"끄기": 0,
+		"켜기": 1,
+		"run":2,
+		"get":1,
+		"digital":30,
+		"analog":31,
+		"pwm":32,
+		"servo_pin":33,
+		"tone":34,
+		"timer":50,
+		"HIGH":1,"LOW":0,
+		"B0":31,"C1":33,"D1":37,"E1":41,"F1":44,"G1":49,"A1":55,"B1":62,
+			"C2":65,"D2":73,"E2":82,"F2":87,"G2":98,"A2":110,"B2":123,
+			"C3":131,"D3":147,"E3":165,"F3":175,"G3":196,"A3":220,"B3":247,
+			"C4":262,"D4":294,"E4":330,"F4":349,"G4":392,"A4":440,"B4":494,
+			"C5":523,"D5":587,"E5":659,"F5":698,"G5":784,"A5":880,"B5":988,
+			"C6":1047,"D6":1175,"E6":1319,"F6":1397,"G6":1568,"A6":1760,"B6":1976,
+			"C7":2093,"D7":2349,"E7":2637,"F7":2794,"G7":3136,"A7":3520,"B7":3951,
+			"C8":4186,"D8":4699,
+		"Half":500,"Quarter":250,"Eighth":125,"Whole":1000,"Double":2000,"Zero":0
+	},
+	"translators":{
+		"zh_CN":{
+			"Demo Program":"演示程序",
+			"HIGH":"高电平",
+			"LOW":"低电平",
+			"digitalWrite( %n , %d.digital )":"数字口输出( %n ,%d.digital )",
+      "blink":"闪烁"
+		}
+	}
+}
