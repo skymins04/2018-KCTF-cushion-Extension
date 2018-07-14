@@ -308,7 +308,7 @@
 			{
 				"setup":"",
 				"inc":"",
-				"def":"int numPriArr_{0}[{1}] = {0,};\n",
+				"def":"double numPriArr_{0}[{1}] = {0,};\n",
 				"work":"",
 				"loop":""
 			}
@@ -352,7 +352,7 @@
 			{
 				"setup":"",
 				"inc":"",
-				"def":"int numSecArr_{0}[{1}][{2}] = {0,};\n",
+				"def":"double numSecArr_{0}[{1}][{2}] = {0,};\n",
 				"work":"",
 				"loop":""
 			}
