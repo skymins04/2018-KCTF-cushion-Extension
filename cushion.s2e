@@ -1,7 +1,7 @@
 {	
 	"extensionName": "cushion Extension",
 	"description": "cushion Extension for 2018 KCTF",
-	"version": "1.0",
+	"version": "1.1",
 	"author": "BetaMan-KangMinsoo(skymin0417@gmail.com)",
 	"homepage": "github.com/skymins04",
 	"sort":0,
@@ -144,6 +144,42 @@
 		],
 		[
 			"w",
+			"LCD: %n 번의 사용자지정 문자 %d.customChar 번  %n , %n , %n , %n , %n , %n , %n , %n",
+			"LCDcreateChar",
+			"1",
+			"1",
+			" ",
+			" ",
+			" ",
+			" ",
+			" ",
+			" ",
+			" ",
+			" ",
+			{
+				"setup":"lcd_{0}.createChar({1},customChar_{0}{1});\n",
+				"inc":"",
+				"def":"byte customChar_{0}{1}[8] = {B{2},B{3},B{4},B{5},B{6},B{7},B{8},B{9}};\n",
+				"work":"",
+				"loop":""
+			}
+		],
+		[
+			"w",
+			"LCD: %n 번의 사용자지정 문자 %d.customChar 번 출력",
+			"LCDprintCustomChar",
+			"1",
+			"1",
+			{
+				"setup":"",
+				"inc":"",
+				"def":"",
+				"work":"lcd_{0}.write({1});",
+				"loop":""
+			}
+		],
+		[
+			"w",
 			"LCD: %n 번의 %d.line 번째 줄, %d.col 번째 칸에 %s 출력하기",
 			"LCDPrint",
 			"1",
@@ -155,6 +191,21 @@
 				"inc":"",
 				"def":"",
 				"work":"lcd_{0}.setCursor({2}-1,{1}-1);\nlcd_{0}.print({3});\n",
+				"loop":""
+			}
+		],
+		[
+			"w",
+			"LCD: %n 번의 %d.line 번째 줄, %d.col 번째 칸 지우기",
+			"LCDcelClear",
+			"1",
+			"1",
+			"1",
+			{
+				"setup":"",
+				"inc":"",
+				"def":"",
+				"work":"lcd_{0}.setCursor({2}-1,{1}-1);\nlcd_{0}.print(\" \");\n",
 				"loop":""
 			}
 		],
@@ -406,8 +457,9 @@
 	"menus": {
 		"addr":["0x20","0x27","0x3f"],
 		"line":[1,2],
-		"col":[1,2,4,6,7,8,9,10,11,12,13,14,15,16],
+		"col":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16],
 		"digitalPin":[0,1,2,3,4,5,6,7,8,9,10,11,12,13],
+		"customChar":[1,2,3,4,5,6,7,8],
 		"analog":[0,1,2,3,4,5,6,7],
 		"TimeField":["시","분","초"],
 		"DateField":["년","월","일"],
