@@ -1,7 +1,7 @@
 {	
 	"extensionName": "cushion Extension",
 	"description": "cushion Extension for 2018 KCTF",
-	"version": "1.1",
+	"version": "1.2",
 	"author": "BetaMan-KangMinsoo(skymin0417@gmail.com)",
 	"homepage": "github.com/skymins04",
 	"sort":0,
@@ -54,65 +54,57 @@
 		],
 		[
 			"w",
-			"RTC: 현재 시간과 날짜로 초기화하기",
-			"setRTC",
+			"DS1302 RTC: DS1302 RTC 생성, 디지털 RST %d.digitalPin , DAT %d.digitalPin , CLK %d.digitalPin",
+			"DS1302begin",
+			"2",
+			"3",
+			"4",
 			{
-				"setup":"",
-				"inc":"#include \"dmonkeyRTC.h\"\n",
-				"def":"dmonkeyRTC rtc;",
-				"work":"rtc.setRTC();",
-				"loop":""
-			}
-		],
-		["-"],
-		[
-			"r",
-			"RTC: 시간",
-			"RTCreadTime",
-			{
-				"setup":"",
-				"inc":"#include \"dmonkeyRTC.h\"\n",
-				"def":"dmonkeyRTC rtc;",
-				"work":"rtc.readTime()",
-				"loop":""
+				"setup": "ds1302.halt(false);\nds1302.writeProtect(false);\n",
+				"inc": "#include \"DS1302.h\"\n",
+				"def": "DS1302 ds1302({0},{1},{2});\n",
+				"work": "",
+				"loop": ""
 			}
 		],
 		[
+			"w",
+			"DS1302 RTC: 현제 시간으로 설정",
+			"settime",
+			"12",
+			"0",
+			"0",
+			{
+				"setup": "ds1302.setTime((int)StrToFloat(strSplit(__TIME__,\":\",1)),(int)StrToFloat(strSplit(__TIME__,\":\",2)),(int)StrToFloat(strSplit(__TIME__,\":\",3)));\n",
+				"inc": "#include \"Strings.h\"\n",
+				"def": "",
+				"work": "",
+				"loop": ""
+			}
+		],
+		[
 			"r",
-			"RTC: 시간중 %d.TimeField 만 읽기",
-			"RTCreadTimeField",
+			"DS1302 RTC: 시간 받아오기",
+			"gettimestr",
+			{
+				"setup": "",
+				"inc": "",
+				"def": "",
+				"work": "ds1302.getTimeStr()",
+				"loop": ""
+			}
+		],
+		[
+			"r",
+			"DS1302 RTC: 시간중 %d.TimeField 만 받아오기",
+			"gettime",
 			"시",
 			{
-				"setup":"",
-				"inc":"#include \"dmonkeyRTC.h\"\n",
-				"def":"dmonkeyRTC rtc;",
-				"work":"rtc.readTimeField({0})",
-				"loop":""
-			}
-		],
-		[
-			"r",
-			"RTC: 날짜",
-			"RTCreadDate",
-			{
-				"setup":"",
-				"inc":"#include \"dmonkeyRTC.h\"\n",
-				"def":"dmonkeyRTC rtc;",
-				"work":"rtc.readDate()",
-				"loop":""
-			}
-		],
-		[
-			"r",
-			"RTC: 날짜중 %d.DateField 만 읽기",
-			"RTCreadDateField",
-			"년",
-			{
-				"setup":"",
-				"inc":"#include \"dmonkeyRTC.h\"\n",
-				"def":"dmonkeyRTC rtc;",
-				"work":"rtc.readDateField({0})",
-				"loop":""
+				"setup": "",
+				"inc": "",
+				"def": "#include \"Strings.h\"\n",
+				"work": "StrToFloat(strSplit(ds1302.getTimeStr(),\":\",{0}))",
+				"loop": ""
 			}
 		],
 		["--"],
@@ -166,15 +158,17 @@
 		],
 		[
 			"w",
-			"LCD: %n 번의 사용자지정 문자 %d.customChar 번 출력",
+			"LCD: %n 번의 %d.line 번째 줄, %d.col 번째 칸에 사용자지정 문자 %d.customChar 번 출력",
 			"LCDprintCustomChar",
+			"1",
+			"1",
 			"1",
 			"1",
 			{
 				"setup":"",
 				"inc":"",
 				"def":"",
-				"work":"lcd_{0}.write({1});",
+				"work":"lcd_{0}.setCursor({2}-1,{1}-1);\nlcd_{0}.write({3});",
 				"loop":""
 			}
 		],
@@ -475,9 +469,9 @@
 		"0x20": 0x20,
 		"0x27": 0x27,
 		"0x3f": 0x3f,
-		"시": 0,
-		"분": 1,
-		"초": 2,
+		"시": 1,
+		"분": 2,
+		"초": 3,
 		"년": 0,
 		"월": 1,
 		"일": 2,
