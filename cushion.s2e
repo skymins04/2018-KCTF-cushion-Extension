@@ -3,7 +3,7 @@
 	"description": "cushion Extension for 2018 KCTF",
 	"version": "1.2",
 	"author": "BetaMan-KangMinsoo(skymin0417@gmail.com)",
-	"homepage": "github.com/skymins04",
+	"homepage": "https://www.github.com/skymins04",
 	"sort":0,
 	"javascriptURL":"js/cushion.js",
   	"firmware":"1.0",
